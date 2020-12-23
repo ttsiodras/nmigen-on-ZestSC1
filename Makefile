@@ -27,7 +27,9 @@ il:
 formal_verification:
 	$(MAKE) -C formal_verification/
 
-pylint:
+# Static Analysis
+sa:
+	flake8 ${SRC_PY}
 	pylint --rcfile=pylint.cfg ${SRC_PY}
 
 clean:

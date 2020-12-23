@@ -3,8 +3,8 @@ An nMigen-driven Blinky example, running on a ZestSC1.
 """
 
 from typing import List, Tuple
-from nmigen import Elaboratable, Signal, Module, ResetSignal
-from nmigen.hdl.ast import Assert, Cover, Assume
+from nmigen import Elaboratable, Signal, Module, ResetSignal, ClockSignal
+from nmigen.asserts import Assert, Cover, Assume, Past, Initial
 from nmigen.build.plat import Platform
 
 from util import main
@@ -49,7 +49,14 @@ class Blinky(Elaboratable):
         sync_rst = ResetSignal("sync")
         mod.d.comb += Assume(~sync_rst)
 
-        return mod, [my_class.leds, my_class.timer]
+        # Force FV to pulse the clock
+        sync_clk = ClockSignal("sync")
+        with mod.If(Initial()):
+            mod.d.comb += Assume(sync_clk)
+        with mod.Else():
+            mod.d.comb += Assume(sync_clk == ~Past(sync_clk))
+
+        return mod, [sync_clk, sync_rst]
 
 
 if __name__ == "__main__":

@@ -1,10 +1,14 @@
 TOP:=toplevel.il
 
 all:	cover bmc prove
-	@echo "=================="
+	@echo -e "\n=================="
 	@echo "  All results: "
 	@echo "=================="
-	@head -1 default_*/status
+	@for i in default_*/status ; do    \
+		cat "$$i" | tr -d '\012' ; \
+		echo " ($$i)" ;            \
+	done
+	@echo 
 
 ${TOP}:	../leds.py
 	$(MAKE) -C ../ il

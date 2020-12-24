@@ -20,7 +20,7 @@ class Blinky(Elaboratable):
         # Outputs. These will be generated in the Verilog
         # module's signature (see FPGA-Verilog/nmigen.v)
         self.leds = Signal(8)
-        self.timer = Signal(29)
+        self.timer = Signal(range(48_000_000))
 
         self.ports = [self.leds]
 
@@ -30,6 +30,8 @@ class Blinky(Elaboratable):
         """
         mod = Module()
         mod.d.sync += self.timer.eq(self.timer + 1)
+        with mod.If(self.timer == 47_999_999):
+            mod.d.sync += self.timer.eq(0)
         mod.d.sync += self.leds.eq(self.timer[-9:])
         return mod
 
@@ -40,7 +42,7 @@ class Blinky(Elaboratable):
         mod.submodules.my_class = my_class = cls()
 
         # Make sure that the output is always less than 100M
-        mod.d.comb += Assert(my_class.timer < 100_000_000)
+        mod.d.comb += Assert(my_class.timer < 48_000_000)
 
         # Cover this case - i.e. show me that it can happen!
         mod.d.comb += Cover(my_class.timer == 5)

@@ -1,6 +1,6 @@
 TOP:=toplevel.il
 
-all:	cover bmc
+all:	cover bmc prove
 	@echo "=================="
 	@echo "  All results: "
 	@echo "=================="
@@ -21,6 +21,13 @@ bmc:	${TOP}
 	@echo "============================="
 	@echo -n "  Result BMC: "
 	@head -1 default_bmc/status
+	@echo "============================="
+
+prove:	${TOP}
+	sby -f default.sby prove || exit 0
+	@echo "============================="
+	@echo -n "  Result PROVE: "
+	@head -1 default_prove/status
 	@echo "============================="
 
 waves:

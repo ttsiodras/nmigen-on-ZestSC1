@@ -1,8 +1,10 @@
 [tasks]
 cover
 bmc
+prove
 
 [options]
+prove: mode prove
 bmc: mode bmc
 cover: mode cover
 depth 20
@@ -10,6 +12,7 @@ multiclock on
 
 [engines]
 cover: smtbmc z3
+prove: smtbmc z3
 bmc: smtbmc z3
 
 [script]
